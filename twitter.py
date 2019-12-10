@@ -33,6 +33,14 @@ class StreamTweets():
                                         self.consumer_secret)
         self.auth.set_access_token(access_token, access_token_secret)
 
+    def find_userID_from_userName(self, user_name):
+        api = API(self.auth, parser=JSONParser())
+        result = api.lookup_users(screen_names= [user_name])
+        if len(result) == 1:
+            return result[0]["id"]
+        else: 
+            print("Multiple Users with username")
+            sys.exit()
 
 def main():
     consumer_key = os.getenv('consumer_key')
@@ -42,6 +50,8 @@ def main():
     stream_tweets = StreamTweets(consumer_key, consumer_secret, 
                               access_token, access_token_secret)
 
+    userID = stream_tweets.find_userID_from_userName("ANI")
+    print(userID)
         
 
 if __name__ == '__main__':
