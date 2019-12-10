@@ -42,6 +42,14 @@ class StreamTweets():
             print("Multiple Users with username")
             sys.exit()
 
+    def stream_tweets_userID(self,userID):
+        twitterStream = Stream(self.auth, listener())
+        twitterStream.filter(follow=[userID])
+
+    def stream_tweets_hashTag(self,hashTag):
+        twitterStream = Stream(self.auth, listener())
+        twitterStream.filter(track=[hashTag], is_async=True)
+
 def main():
     consumer_key = os.getenv('consumer_key')
     consumer_secret = os.getenv('consumer_secret')
@@ -52,6 +60,8 @@ def main():
 
     userID = stream_tweets.find_userID_from_userName("ANI")
     print(userID)
+    # # stream_tweets.stream_tweets_hashTag("unnao")
+    # stream_tweets.stream_tweets_userID(str(userID))
         
 
 if __name__ == '__main__':
