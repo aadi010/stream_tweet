@@ -5,7 +5,8 @@ from tweepy.parsers import JSONParser
 import json
 import os
 import sys 
-import environ
+from dotenv import load_dotenv
+load_dotenv()
 
 class listener(StreamListener):
 
@@ -33,13 +34,15 @@ class StreamTweets():
         self.auth.set_access_token(access_token, access_token_secret)
 
 
-
 def main():
-    # stream_tweets = StreamTweets(consumer_key, consumer_secret, 
-    #                           access_token, access_token_secret)
-    pass
-    
-    
+    consumer_key = os.getenv('consumer_key')
+    consumer_secret = os.getenv('consumer_secret')
+    access_token = os.getenv('access_token')
+    access_token_secret = os.getenv('access_token_secret')
+    stream_tweets = StreamTweets(consumer_key, consumer_secret, 
+                              access_token, access_token_secret)
+
+        
 
 if __name__ == '__main__':
     main()
