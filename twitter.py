@@ -9,9 +9,12 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class listener(StreamListener):
-
+    def __init__(self, output_file=sys.stdout):
+        super(listener,self).__init__()
+        self.output_file = output_file
+        
     def on_data(self, data):
-        print(data)
+        print(data, file=self.output_file)
         return(True)
 
     def on_error(self, status):
@@ -43,26 +46,25 @@ class StreamTweets():
             sys.exit()
 
     def stream_tweets_userID(self,userID):
-        twitterStream = Stream(self.auth, listener())
-        twitterStream.filter(follow=[userID])
+        output = open('tweets_userID.txt', 'w')
+        twitterStream = Stream(self.auth, listener(output_file=output))
+        try:
+            twitterStream.filter(follow=[userID])
+        except KeyboardInterrupt:
+            print("Stopped.")
+        finally:
+            twitterStream.disconnect()
+            output.close()
 
     def stream_tweets_hashTag(self,hashTag):
-        twitterStream = Stream(self.auth, listener())
-        twitterStream.filter(track=[hashTag], is_async=True)
-
-def main():
-    consumer_key = os.getenv('consumer_key')
-    consumer_secret = os.getenv('consumer_secret')
-    access_token = os.getenv('access_token')
-    access_token_secret = os.getenv('access_token_secret')
-    stream_tweets = StreamTweets(consumer_key, consumer_secret, 
-                              access_token, access_token_secret)
-
-    userID = stream_tweets.find_userID_from_userName("ANI")
-    print(userID)
-    # # stream_tweets.stream_tweets_hashTag("unnao")
-    # stream_tweets.stream_tweets_userID(str(userID))
+        output = open('tweets_hashTag.txt', 'w')
+        twitterStream = Stream(self.auth, listener(output_file=output))
+        try:
+            twitterStream.filter(track=[hashTag], is_async=True)
+        except KeyboardInterrupt:
+            print("Stopped.")
+        finally:
+            twitterStream.disconnect()
+            output.close()
         
 
-if __name__ == '__main__':
-    main()
