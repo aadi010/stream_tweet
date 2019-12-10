@@ -5,9 +5,8 @@ from tweepy.parsers import JSONParser
 import json
 import os
 import sys 
-from dotenv import load_dotenv
-load_dotenv()
 
+#Tweepy Listener
 class listener(StreamListener):
     def __init__(self, output_file=sys.stdout):
         super(listener,self).__init__()
@@ -22,6 +21,7 @@ class listener(StreamListener):
             return False
         print(status)
 
+#Stream Tweets Class
 class StreamTweets():
     """
         Simple class to print tweets
@@ -35,7 +35,8 @@ class StreamTweets():
         self.auth = OAuthHandler(self.consumer_key, 
                                         self.consumer_secret)
         self.auth.set_access_token(access_token, access_token_secret)
-
+    
+    #Define find_userID_from_userName() to get userID for a twitter user from userName
     def find_userID_from_userName(self, user_name):
         api = API(self.auth, parser=JSONParser())
         result = api.lookup_users(screen_names= [user_name])
@@ -45,6 +46,7 @@ class StreamTweets():
             print("Multiple Users with username")
             sys.exit()
 
+    #Define stream_tweets_userID() to stream tweets from a user TimeLine
     def stream_tweets_userID(self,userID):
         output = open('tweets_userID.txt', 'w')
         twitterStream = Stream(self.auth, listener(output_file=output))
@@ -56,11 +58,12 @@ class StreamTweets():
             twitterStream.disconnect()
             output.close()
 
+    #Define stream_tweets_hashTag() to stream tweets for a particular hashTag
     def stream_tweets_hashTag(self,hashTag):
         output = open('tweets_hashTag.txt', 'w')
         twitterStream = Stream(self.auth, listener(output_file=output))
         try:
-            twitterStream.filter(track=[hashTag], is_async=True)
+            twitterStream.filter(track=[hashTag])
         except KeyboardInterrupt:
             print("Stopped.")
         finally:
