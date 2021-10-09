@@ -1,4 +1,4 @@
-# tweet_byju
+# stream_tweet
 
 To Get Started:
 
